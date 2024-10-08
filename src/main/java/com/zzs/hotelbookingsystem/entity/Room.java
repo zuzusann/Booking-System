@@ -20,7 +20,6 @@ public class Room {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int roomId;
-    private String roomName;
     private int roomPrice;
     private String roomType;
     private boolean bookingAvailable = false;
@@ -44,7 +43,5 @@ public class Room {
 
        }
     }
-
-
 
 }

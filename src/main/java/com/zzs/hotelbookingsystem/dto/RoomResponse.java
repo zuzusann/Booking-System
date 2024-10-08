@@ -1,5 +1,6 @@
 package com.zzs.hotelbookingsystem.dto;
 
+import com.zzs.hotelbookingsystem.entity.BookedRoom;
 import jakarta.persistence.Lob;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -14,7 +15,6 @@ import java.util.List;
 public class RoomResponse {
 
     private int roomId;
-    private String roomName;
     private String roomType;
     private int roomPrice;
     private boolean bookingAvailable = false;
@@ -27,4 +27,6 @@ public class RoomResponse {
         this.roomType = roomType;
         this.roomPrice = roomPrice;
     }
+
+
 }
