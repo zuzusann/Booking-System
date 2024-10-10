@@ -1,15 +1,11 @@
 package com.zzs.hotelbookingsystem.service;
-
-import com.zzs.hotelbookingsystem.dto.RoomResponse;
 import com.zzs.hotelbookingsystem.entity.Room;
+import com.zzs.hotelbookingsystem.exception.ResourceNotFoundException;
 import com.zzs.hotelbookingsystem.repository.RoomRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-
 import javax.sql.rowset.serial.SerialBlob;
-import java.io.IOException;
 import java.sql.Blob;
 import java.sql.SQLException;
 import java.util.List;
@@ -65,6 +61,44 @@ public class RoomServiceImpl implements RoomService{
             }
         }
         return null;
+    }
+
+    @Override
+    public void deleteRoom(int roomId) {
+        Optional<Room> room = roomRepository.findById(roomId);
+        try{
+            roomRepository.deleteById(roomId);
+        }catch(Exception e){
+            throw new RuntimeException(e);
+        }
+
+
+    }
+
+    @Override
+    public Room updateRoom(int roomId, String roomType, int roomPrice, byte[] photoByte) {
+        Room room = roomRepository.findById(roomId)
+                .orElseThrow(() -> new ResourceNotFoundException("Room not found"));
+        if(roomType!=null){
+            room.setRoomType(roomType);
+        }
+        if(roomPrice!= 0){
+            room.setRoomPrice(roomPrice);
+        }
+        if(photoByte!=null){
+            try{
+                room.setPhoto(new SerialBlob(photoByte));
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+
+        }
+        return roomRepository.save(room);
+    }
+
+    @Override
+    public Optional<Room> getRoomByRoomId(int roomId) {
+        return roomRepository.findById(roomId);
     }
 
 

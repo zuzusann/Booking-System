@@ -21,8 +21,6 @@ public class BookingResponse {
     private int guestNo;
     private String bookingConfirmationCode;
 
-    private RoomResponse roomResponse;
-
     public BookingResponse(int bookedRoomID, LocalDate checkInDate, LocalDate checkOutDate, String bookingConfirmationCode) {
         this.bookedRoomID = bookedRoomID;
         this.checkInDate = checkInDate;

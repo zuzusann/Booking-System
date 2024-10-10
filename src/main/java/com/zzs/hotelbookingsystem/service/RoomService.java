@@ -8,6 +8,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Optional;
 
 public interface RoomService {
 
@@ -19,4 +20,11 @@ public interface RoomService {
     List<Room> getAllRooms();
 
     byte[] getRoomPhotoByRoomId(int roomId) throws SQLException;
+
+    void deleteRoom(int roomId);
+
+
+    Room updateRoom(int roomId, String roomType, int roomPrice, byte[] photoByte);
+
+    Optional<Room> getRoomByRoomId(int roomId);
 }

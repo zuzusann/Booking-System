@@ -26,7 +26,7 @@ public class BookedRoom {
     private int guestNo;
     private String bookingConfirmationCode;
 
-    @ManyToOne(fetch = FetchType.LAZY )
+    @ManyToOne(fetch = FetchType.LAZY)
     private Room room;
 
     public BookedRoom(String bookingConfirmationCode) {

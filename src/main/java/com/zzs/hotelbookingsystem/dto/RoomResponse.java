@@ -20,9 +20,8 @@ public class RoomResponse {
     private boolean bookingAvailable = false;
     private String photo;
 
-    private List<BookingResponse> bookingResponses;
 
-    public RoomResponse(int roomId, String roomType, int roomPrice) {
+    public RoomResponse(int roomId, String roomType, int roomPrice ) {
         this.roomId = roomId;
         this.roomType = roomType;
         this.roomPrice = roomPrice;
