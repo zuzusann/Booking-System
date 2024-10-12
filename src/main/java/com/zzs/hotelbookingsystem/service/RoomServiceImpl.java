@@ -1,11 +1,15 @@
 package com.zzs.hotelbookingsystem.service;
+
 import com.zzs.hotelbookingsystem.entity.Room;
+import com.zzs.hotelbookingsystem.exception.InternalServerException;
 import com.zzs.hotelbookingsystem.exception.ResourceNotFoundException;
 import com.zzs.hotelbookingsystem.repository.RoomRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+
 import javax.sql.rowset.serial.SerialBlob;
+import java.io.IOException;
 import java.sql.Blob;
 import java.sql.SQLException;
 import java.util.List;
@@ -18,20 +22,20 @@ public class RoomServiceImpl implements RoomService{
     private final RoomRepository roomRepository;
 
     @Override
-    public Room addnewRoom(MultipartFile photo, String roomType, int roomPrice) {
+    public Room addNewRoom(String roomType, int roomPrice, MultipartFile photo) {
         Room room = new Room();
         room.setRoomType(roomType);
         room.setRoomPrice(roomPrice);
-        if(photo!=null){
-            byte[] photoByte = null;
+        if(!photo.isEmpty()){
+            byte[] photoBytes = null;
             try {
-                photoByte = photo.getBytes();
-            } catch (Exception e) {
+                photoBytes = photo.getBytes();
+            } catch (IOException e) {
                 throw new RuntimeException(e);
             }
             Blob photoBlob = null;
             try {
-                photoBlob = new SerialBlob(photoByte);
+                photoBlob = new SerialBlob(photoBytes);
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
@@ -42,7 +46,7 @@ public class RoomServiceImpl implements RoomService{
 
     @Override
     public List<String> getAllRoomTypes() {
-        return roomRepository.getALLRoomTypes();
+        return roomRepository.getAllRoomTypes();
     }
 
     @Override
@@ -52,12 +56,11 @@ public class RoomServiceImpl implements RoomService{
 
     @Override
     public byte[] getRoomPhotoByRoomId(int roomId) throws SQLException {
-        //In Java, the Optional class is used to handle situations where a value may or may not be present.
-        Optional<Room> theRoom = roomRepository.findById(roomId);
-        if(theRoom.isPresent()){
-            Blob photoBlob = theRoom.get().getPhoto();
-            if(photoBlob!=null){
-                return photoBlob.getBytes(1,(int)  photoBlob.length());
+        Optional<Room> room = roomRepository.findById(roomId);
+        if(room.isPresent()){
+            Blob photoBlob = room.get().getPhoto();
+            if(photoBlob != null){
+                return photoBlob.getBytes(1, (int) photoBlob.  length());
             }
         }
         return null;
@@ -66,38 +69,33 @@ public class RoomServiceImpl implements RoomService{
     @Override
     public void deleteRoom(int roomId) {
         Optional<Room> room = roomRepository.findById(roomId);
-        try{
+        if(room.isPresent()){
             roomRepository.deleteById(roomId);
-        }catch(Exception e){
-            throw new RuntimeException(e);
         }
-
-
     }
 
     @Override
     public Room updateRoom(int roomId, String roomType, int roomPrice, byte[] photoByte) {
         Room room = roomRepository.findById(roomId)
-                .orElseThrow(() -> new ResourceNotFoundException("Room not found"));
-        if(roomType!=null){
+                .orElseThrow(() -> new ResourceNotFoundException("Room Not Found"));
+        if(roomType != null){
             room.setRoomType(roomType);
         }
-        if(roomPrice!= 0){
+        if(roomPrice > 0){
             room.setRoomPrice(roomPrice);
         }
-        if(photoByte!=null){
+        if(photoByte != null && photoByte.length > 0){
             try{
-                room.setPhoto(new SerialBlob(photoByte));
-            } catch (Exception e) {
-                throw new RuntimeException(e);
+               room.setPhoto(new SerialBlob(photoByte));
+            }catch(SQLException e){
+                throw new InternalServerException("Error updating room");
             }
-
         }
         return roomRepository.save(room);
     }
 
     @Override
-    public Optional<Room> getRoomByRoomId(int roomId) {
+    public Optional<Room> getRoomById(int roomId) {
         return roomRepository.findById(roomId);
     }
 

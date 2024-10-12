@@ -10,7 +10,6 @@ import java.util.List;
 @Repository
 public interface RoomRepository extends JpaRepository<Room, Integer> {
 
-    @Query("SELECT DISTINCT r.roomType FROM Room r")
-    List<String> getALLRoomTypes();
-
+    @Query("SELECT DISTINCT r.roomType fROM Room r")
+    List<String> getAllRoomTypes();
 }

@@ -1,5 +1,6 @@
 package com.zzs.hotelbookingsystem.entity;
 
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,25 +12,22 @@ import java.time.LocalDate;
 @Entity
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 public class BookedRoom {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int bookedRoomID;
+    private int bookingId;
     private LocalDate checkInDate;
     private LocalDate checkOutDate;
     private String guestName;
+    private int guestPhoneNumber;
     private String guestEmail;
-    private String guestPhone;
-    private int guestNo;
+    private int numberOfGuests;
     private String bookingConfirmationCode;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Room room;
 
-    public BookedRoom(String bookingConfirmationCode) {
-        this.bookingConfirmationCode = bookingConfirmationCode;
-    }
 }
